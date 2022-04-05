@@ -35,7 +35,10 @@ function calcFallTime(length) {
 
 function redraw() {
   let x = [];
-  for (let i = getLenStart(); i <= getLenEnd(); i++) {
+  let lenStart = getLenStart();
+  let lenEnd = getLenEnd();
+  if (isNaN(lenStart) || isNaN(lenEnd)) return;
+  for (let i = lenStart; i <= lenEnd; i++) {
     x.push(i);
   }
   draw({
