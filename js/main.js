@@ -18,7 +18,7 @@ function getLenStart() {
 }
 
 function getLenEnd() {
-  function Number.parseInt(in_len_end.value);
+  return Number.parseInt(in_len_end.value);
 }
 
 [in_G, in_len_start, in_len_end, in_alpha].forEach(input => input.onchange = redraw);
