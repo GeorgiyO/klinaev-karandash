@@ -1,4 +1,4 @@
-const {cos, sqrt} = Math;
+const {sin, sqrt, PI} = Math;
 
 const in_G = document.getElementById("in_G");
 const in_alpha = document.getElementById("in_alpha");
@@ -27,43 +27,33 @@ function getLenEnd() {
 
 [in_G, in_len_start, in_len_end, in_alpha].forEach(input => input.onchange = redraw);
 
-function integralFormula(x) {
-  return 1 / sqrt(1 - cos(x));
-}
-
 function calcFallTime(length) {
-  let g = getG();
-  let alpha = getAlpha();
-  if (isNaN(g) || isNaN(alpha)) {
-    return 0;
-  }
-  let k = g / length;
-  return (1 / sqrt(2 * k)) *
-         (solveIntegral(integralFormula, 0, alpha, 10));
-}
-
-function solveIntegral(fx, x0, xN, N) {
-  let DX = xN - x0;
-  let dx = DX / N;
-  let x = new Array(N + 1).fill(0)
-                          .map((_, i) => x0 + i * dx);
-  let sum = 0;
-  for (let i = 1; i < x.length; i++) {
-    console.log(fx((x[i - 1] + x[i]) / 2) * dx);
-    sum += fx((x[i - 1] + x[i]) / 2);
-  }
-  console.log(sum, dx);
-  console.log(x);
-  return sum * dx;
+    let dt = 0.0001;
+    
+    let _phi, phi;
+    let _om, om;
+    let _t, t;
+    
+    _phi = getAlpha();
+    _om = 0;
+    _t = 0;
+    
+    while (_phi < PI / 2) {
+        t = _t + dt;
+        om = _om + 1.5 * getG() * dt * sin(_phi) / length;
+        phi = _phi + _om * dt;
+        _t = t; _om = om; _phi = phi;
+    }
+    
+    return t;
 }
 
 function redraw() {
   let x = [];
   let lenStart = getLenStart();
   let lenEnd = getLenEnd();
-  if (isNaN(lenStart) || isNaN(lenEnd)) return;
   let dl = (lenEnd - lenStart) / 10;
-  new Array(10).fill(0).map((_, i) => lenStart + dl * i)
+  new Array(11).fill(0).map((_, i) => lenStart + dl * i)
                .forEach(it => x.push(it));
   draw({
     x,
